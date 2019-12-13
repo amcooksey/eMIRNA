@@ -17,21 +17,26 @@ RUN chmod 777 -R /opt/conda/
 
 ENV PATH=$PATH:/opt/conda/bin
 
-ADD Renviron.site /usr/local/lib/R/etc/
+ADD Renviron.site Rprofile.site /usr/local/lib/R/etc/
 
 RUN conda config --add channels bioconda
 
 RUN conda upgrade conda
 
 # add  conda packages
-RUN conda install -c conda-forge -c bioconda conda bowtie bedtools viennarna fasta_ushuffle seqkit 
+RUN conda install -c conda-forge -c bioconda conda bowtie bedtools viennarna fasta_ushuffle seqkit cd-hit
 
 RUN cd /usr/local/bin && wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/legacy.NOTSUPPORTED/2.2.26/blast-2.2.26-ia32-linux.tar.gz && \
 	tar -xvzf blast-2.2.26-ia32-linux.tar.gz 
 
 ENV PATH=$PATH:/usr/local/bin/blast-2.2.26/bin
-	
-RUN Rscript -e 'install.packages(c("BiocManager", "stringr", "seqinr", "scales", "PRROC", "miRNAss", "PCIT", "igraph", "HextractoR", "CD-Hit", "eMIRNA"))'
+
+RUN Rscript -e 'install.packages(c("BiocManager", "stringr", "seqinr", "scales", "PRROC", "miRNAss", "PCIT", "igraph", "HextractoR", "snow"));'
+
+RUN git clone https://github.com/emarmolsanchez/eMIRNA.git
+
+RUN mv eMIRNA/bin/eMIRNA.* eMIRNA/bin/*.pl /usr/bin/ && chmod +x /usr/bin/eMIRNA.* /usr/bin/*.pl
+
 RUN Rscript -e 'BiocManager::install(c("Biobase", "NOISeq", "edgeR"));'
 
 
