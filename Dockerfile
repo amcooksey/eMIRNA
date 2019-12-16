@@ -33,10 +33,12 @@ ENV PATH=$PATH:/usr/local/bin/blast-2.2.26/bin
 
 RUN Rscript -e 'install.packages(c("BiocManager", "stringr", "seqinr", "scales", "PRROC", "miRNAss", "PCIT", "igraph", "HextractoR", "snow"));'
 
-RUN git clone https://github.com/emarmolsanchez/eMIRNA.git
-
-RUN mv eMIRNA/bin/eMIRNA.* eMIRNA/bin/*.pl /usr/bin/ && chmod +x /usr/bin/eMIRNA.* /usr/bin/*.pl
-
 RUN Rscript -e 'BiocManager::install(c("Biobase", "NOISeq", "edgeR"));'
+
+RUN wget https://raw.githubusercontent.com/emarmolsanchez/eMIRNA/master/bin/eMIRNA_RScripts.R 
+
+RUN Rscript -e 'source("eMIRNA_RScripts.R")'
+
+
 
 
